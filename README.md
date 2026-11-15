@@ -38,7 +38,26 @@ sudo sysctl -w vm.max_map_count=262144
    * Ouvre le navigateur à l'adresse `https://localhost`.
    * *Identifiants par défaut : `admin` / `SecretPassword`.*
 
-## Simulation d'Attaques et Tests (NIDS)
+## Règle de Détection Personnalisée (Suricata)
+
+Une règle locale est intégrée dans `suricata/rules/local.rules` et fusionnée automatiquement au démarrage :
+
+```suricata
+alert http any any -> any any (msg:"Test - DEMO - IDS - Detection User-Agent Suspect (Evil)"; http.user_agent; content:"Evil"; sid:1000001; rev:1;)
+```
+
+Cette signature détecte toute requête HTTP sortante ou entrante utilisant un `User-Agent` contenant la chaîne `Evil`.
+
+---
+
+## Simulation d'Attaques et Tests 
+### Scénario 1 : Déclencher la règle personnalisée (`EvilScanner`)
+Envoie une requête HTTP avec un `User-Agent` malveillant depuis le conteneur `curl` :
+
+```bash
+docker compose exec curl curl -A "Evil" http://example.com
+```
+### Scénario 2 : Simuler des menaces connues avec `tmNIDS`
 Pour vérifier que Suricata détecte bien les menaces réseau et transmet les alertes à Wazuh, nous utilisons le script **tmNIDS** (TestMyNIDS) depuis le conteneur `curl`.
 Exécute la commande suivante pour simuler des activités malveillantes  :
 
