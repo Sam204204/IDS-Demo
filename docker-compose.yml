@@ -7,6 +7,8 @@ services:
       context: ./suricata
     container_name: suricata
     network_mode: host
+    depends_on:
+      - curl
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -14,14 +16,24 @@ services:
     volumes:
       - ./config/suricata/suricata.yml:/etc/suricata/suricata.yaml
       - ./suricata-logs:/var/log/suricata
-    command: bash -c "suricata-update --local /etc/suricata/rules/local.rules && service cron start && suricata -c /etc/suricata/suricata.yaml -i wlp2s0"
-
+    command: bash -c "suricata-update --local /etc/suricata/rules/local.rules && service cron start && suricata -c /etc/suricata/suricata.yaml -i br_ids"
     
-
   curl:
     build:
       context: ./curl/.
-    network_mode: host
+    networks:
+      - ids_net
+
+networks:
+  ids_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.0.0/16
+    driver_opts:
+      com.docker.network.bridge.name: br_ids
+
 
 
 
