@@ -14,12 +14,14 @@ services:
     volumes:
       - ./config/suricata/suricata.yml:/etc/suricata/suricata.yaml
       - ./suricata-logs:/var/log/suricata
-    command: bash -c "suricata-update && service cron start && suricata -c /etc/suricata/suricata.yaml -i wlp2s0"
+    command: bash -c "suricata-update --local /etc/suricata/rules/local.rules && service cron start && suricata -c /etc/suricata/suricata.yaml -i wlp2s0"
+
+    
 
   curl:
-    network_mode: host
     build:
       context: ./curl/.
+    network_mode: host
 
 
 

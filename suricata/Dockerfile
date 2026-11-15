@@ -8,3 +8,4 @@ COPY update-rules /etc/cron.d/update-rules
 RUN chmod 0744 /etc/cron.d/update-rules
 RUN crontab /etc/cron.d/update-rules
 RUN touch /var/log/cron.log
+COPY rules/local.rules /etc/suricata/rules/local.rules

@@ -1,1 +1,2 @@
-*/5 * * * * suricata-update >> /var/log/cron.log 2>&1
+*/5 * * * * suricata-update --local /etc/suricata/rules/local.rules >> /var/log/cron.log 2>&1
+
