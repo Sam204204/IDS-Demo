@@ -1,1 +1,1 @@
-Projet IDS ( Grafana - Suricata - Wazuh )
+Projet IDS ( Suricata - Wazuh )
