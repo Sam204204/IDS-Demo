@@ -1,2 +1,22 @@
 include:
   - ./config/wazuh/wazuh.yml
+
+services:
+  suricata:
+    build:
+      context: ./suricata
+    container_name: suricata
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
+    volumes:
+      - ./config/suricata/suricata.yml:/etc/suricata/suricata.yaml
+      - ./suricata-logs:/var/log/suricata
+    command: bash -c "suricata-update && service cron start && suricata -c /etc/suricata/suricata.yaml -i wlp2s0"
+
+
+
+
+ 
