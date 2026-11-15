@@ -1,0 +1,15 @@
+*ssl_certs/
+*.pem
+*.key
+*.crt
+*.csr
+
+logs/
+suricata-logs/
+data/
+*.log
+*.pcap
+eve.json
+
+.env
+
