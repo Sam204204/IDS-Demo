@@ -33,7 +33,7 @@ Exécute la commande suivante dans config/wazuh/ :
    ```
 **Construire et démarrer les conteneurs en arrière-plan :**
    ```bash
-   docker compose up -d --build
+   docker compose up -d
    ```
 **Nettoyer le déploiement précédent :**
    ```bash
