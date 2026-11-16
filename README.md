@@ -1,6 +1,6 @@
 # IDS-Demo : Détection d'Intrusions avec Wazuh & Suricata
 
-Ce projet propose une démonstration d'une architecture de détection d'intrusions Il associe **Suricata** (NIDS) pour l'analyse du trafic réseau et **Wazuh** (SIEM & HIDS) pour la centralisation, la corrélation et la visualisation des alertes de sécurité.
+Ce projet propose une démonstration d'une architecture de détection d'intrusions. Il associe **Suricata** (NIDS) pour l'analyse du trafic réseau et **Wazuh** (SIEM & HIDS) pour la centralisation, la corrélation et la visualisation des alertes de sécurité.
 
 ## Architecture du Projet
 
@@ -20,7 +20,7 @@ IDS-Demo/
 ```
 ##  Prérequis
 * **Configuration mémoire système** : L'indexeur Wazuh (OpenSearch) nécessite l'augmentation du paramètre `vm.max_map_count` sur l'hôte Linux.
-Exécute la commande suivante sur ta machine hôte avant le premier démarrage :
+Exécute la commande suivante sur la machine hôte avant le premier démarrage :
 ```bash
 sudo sysctl -w vm.max_map_count=262144
 ```
@@ -35,7 +35,7 @@ Exécute la commande suivante dans config/wazuh/ :
    ```bash
    docker compose up -d --build
    ```
-**Nettoyer un éventuel déploiement précédent (optionnel) :**
+**Nettoyer le déploiement précédent :**
    ```bash
    docker compose down -v
    ```
@@ -48,19 +48,19 @@ Exécute la commande suivante dans config/wazuh/ :
 Une règle locale est intégrée dans `suricata/rules/local.rules` et fusionnée automatiquement au démarrage :
 
 ```suricata
-alert http any any -> any any (msg:"Test - DEMO - IDS - Detection User-Agent Suspect (Evil)"; http.user_agent; content:"Evil"; sid:1000001; rev:1;)
+alert http any any -> any any (msg:"DEMO - Injection SQL"; http.uri; content:"OR"; nocase; content:"1=1"; sid:1000001; rev:1;)
 ```
 
-Cette signature détecte toute requête HTTP sortante ou entrante utilisant un `User-Agent` contenant la chaîne `Evil`.
+Cette signature détecte toute requête HTTP sortante ou entrante dont l'URL contient simultanément les chaînes « OR » et « 1=1 »
 
 ---
 
 ## Simulation d'Attaques et Tests 
-### Scénario 1 : Déclencher la règle personnalisée (`EvilScanner`)
-Envoie une requête HTTP avec un `User-Agent` malveillant depuis le conteneur `curl` :
+### Scénario 1 : Déclencher la règle personnalisée (`Injection SQL`)
+Envoie une requête HTTP contenant une injection SQL (`OR 1=1`) dans l'URL depuis le conteneur `curl` :
 
 ```bash
-docker compose exec curl curl -A "Evil" http://example.com
+docker compose exec curl curl -g "http://example.com/?user=admin'+OR+1=1"
 ```
 ### Scénario 2 : Simuler des menaces connues avec `tmNIDS`
 Pour vérifier que Suricata détecte bien les menaces réseau et transmet les alertes à Wazuh, nous utilisons le script **tmNIDS** (TestMyNIDS) depuis le conteneur `curl`.
@@ -84,6 +84,6 @@ docker exec -it $(docker ps -qf "name=wazuh.manager") grep -E "Cryptowall|Tor Re
 ## Références et Ressources
 
 * [Wazuh Docker (v4.14.12 Single-Node)](https://github.com/wazuh/wazuh-docker/tree/4.14.12/single-node)
-* [Suricata GitHub Repository (OISF)](https://github.com/OISF/suricata/tree/main
+* [Suricata GitHub Repository (OISF)](https://github.com/OISF/suricata/tree/main)
 * [Framework TestMyNIDS (3CORESec)](https://github.com/3CORESec/testmynids.org)
 * https://github.com/nbittich/grafana-example

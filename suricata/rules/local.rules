@@ -1,1 +1,1 @@
-alert http any any -> any any (msg:"Test - DEMO - IDS - Detection User-Agent Suspect (Evil)"; http.user_agent; content:"Evil"; sid:1000001; rev:1;)
+alert http any any -> any any (msg:"Test - DEMO - IDS - Injection SQL"; http.uri; content:"OR"; nocase; content:"1=1"; sid:1000001; rev:1;)
