@@ -26,6 +26,11 @@ sudo sysctl -w vm.max_map_count=262144
 ```
 
 ## Déploiement
+**Générer les certificats SSL pour l'indexeur Wazuh (obligatoire au premier démarrage) :**
+Exécute la commande suivante dans config/wazuh/ :
+   ```bash
+   docker compose -f generate-indexer-certs.yml run --rm generator
+   ```
 **Construire et démarrer les conteneurs en arrière-plan :**
    ```bash
    docker compose up -d --build
